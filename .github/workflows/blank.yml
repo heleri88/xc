@@ -1,0 +1,31 @@
+name: Märja dump
+
+on:
+  workflow_dispatch:            # käivita käsitsi “Run workflow” nupust
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: Install deps
+      run: python -m pip install pandas requests
+    - name: Make Märja CSV
+      run: |
+        python - <<'PY'
+        <--- siia kleepi sama Python-kood, mis eelmises peatükis --->
+        PY
+    - name: Upload artefact
+      uses: actions/upload-artifact@v4
+      with:
+        name: marja_alevik_ehitised
+        path: marja_alevik_ehitised.csv
+    - name: Release asset
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: "marja-${{ github.run_id }}"
+        files: marja_alevik_ehitised.csv
